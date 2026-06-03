@@ -24,7 +24,8 @@ export interface CustomerOrder {
   customerId: string;
   items: OrderItem[];
   arrivedAt: number; // timestamp
-  patience: number; // seconds before customer leaves
+  patience: number; // total seconds of patience this customer started with
+  patienceRemaining: number; // seconds left before customer leaves (drains over time)
   mood: CustomerMood;
 }
 

@@ -53,6 +53,18 @@ export function TableCard({
   const deliveredItems = table.order?.items.filter((it) => it.status === "delivered") ?? [];
   const mood = table.order?.mood ?? "happy";
 
+  // Patience bar — drains from full to empty over the customer's patience
+  // window. Color shifts green → yellow → red as urgency rises.
+  const patienceTotal = table.order?.patience ?? 0;
+  const patienceLeft = table.order?.patienceRemaining ?? 0;
+  const patiencePct =
+    patienceTotal > 0
+      ? Math.max(0, Math.min(100, (patienceLeft / patienceTotal) * 100))
+      : 0;
+  let patienceBarColor = successColor;
+  if (patiencePct < 25) patienceBarColor = errorColor;
+  else if (patiencePct < 50) patienceBarColor = warningColor;
+
   let borderColor = surfaceColor;
   if (isSelected) borderColor = primaryColor;
   if (hasItemInHand && isOccupied) borderColor = successColor;
@@ -92,6 +104,31 @@ export function TableCard({
         {isDone && <span className="text-xl">✅</span>}
         {isEmpty && <span className="text-lg opacity-40">🪑</span>}
       </div>
+
+      {/* Patience bar — visible only while a customer is waiting. */}
+      {isOccupied && table.order && (
+        <div
+          className="relative h-2 w-full rounded-full overflow-hidden"
+          style={{ background: "rgba(0,0,0,0.12)" }}
+          aria-label={`Patience: ${Math.round(patiencePct)}%`}
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(patiencePct)}
+        >
+          <div
+            className="h-full rounded-full transition-[width,background-color] duration-200 ease-linear"
+            style={{
+              width: `${patiencePct}%`,
+              background: patienceBarColor,
+              boxShadow:
+                patiencePct < 25
+                  ? `0 0 8px ${patienceBarColor}`
+                  : undefined,
+            }}
+          />
+        </div>
+      )}
 
       {/* Customer emoji */}
       {table.customerEmoji && !isDone && (

@@ -9,9 +9,9 @@ import type {
   PrepStation,
   Table,
 } from "~/game/types/game.types";
+import { getLevelConfig, type LevelConfig } from "~/game/config/levelConfigs";
 
 const CUSTOMER_EMOJIS = ["👩", "👨", "🧑", "👧", "👦", "🧔", "👴", "👵", "🧕", "👲"];
-const PATIENCE_BASE = 45; // seconds
 
 let _orderIdCounter = 0;
 let _customerIdCounter = 0;
@@ -101,6 +101,9 @@ export function useGameEngine(options: UseGameEngineOptions) {
   const prepTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const moodTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const totalCustomersSpawnedRef = useRef(0);
+  // Active level config — single source of truth for difficulty per level.
+  const levelConfigRef = useRef<LevelConfig>(getLevelConfig(1));
+  const [levelConfig, setLevelConfig] = useState<LevelConfig>(() => getLevelConfig(1));
 
   const clearAllTimers = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -118,6 +121,12 @@ export function useGameEngine(options: UseGameEngineOptions) {
     totalCustomersSpawnedRef.current = 0;
     _orderIdCounter = 0;
     _customerIdCounter = 0;
+
+    // Load the difficulty config for this level — patience, arrival rate,
+    // and simultaneous-customer cap all come from here.
+    const nextConfig = getLevelConfig(level);
+    levelConfigRef.current = nextConfig;
+    setLevelConfig(nextConfig);
 
     setState({
       phase: "playing",
@@ -162,6 +171,15 @@ export function useGameEngine(options: UseGameEngineOptions) {
       if (prev.phase !== "playing") return prev;
       if (totalCustomersSpawnedRef.current >= maxCustomers) return prev;
 
+      // Enforce the level's simultaneous-customer cap. Active = anyone
+      // still sitting at a table waiting/eating, derived from tables.
+      const activeCount = prev.tables.filter(
+        (t) => t.status === "occupied" || t.status === "waiting_delivery"
+      ).length;
+      if (activeCount >= levelConfigRef.current.maxSimultaneousCustomers) {
+        return prev;
+      }
+
       const emptyTable = prev.tables.find((t) => t.status === "empty");
       if (!emptyTable) return prev;
 
@@ -173,6 +191,9 @@ export function useGameEngine(options: UseGameEngineOptions) {
         selectedItems.push(pickRandom(menuItems));
       }
 
+      // Patience window is config-driven, not hardcoded.
+      const patienceSeconds = levelConfigRef.current.patienceTimerSeconds;
+
       const order: CustomerOrder = {
         id: genOrderId(),
         tableId: emptyTable.id,
@@ -182,7 +203,8 @@ export function useGameEngine(options: UseGameEngineOptions) {
           status: "pending" as OrderStatus,
         })),
         arrivedAt: Date.now(),
-        patience: PATIENCE_BASE + Math.floor(Math.random() * 20),
+        patience: patienceSeconds,
+        patienceRemaining: patienceSeconds,
         mood: "happy",
       };
 
@@ -409,43 +431,41 @@ export function useGameEngine(options: UseGameEngineOptions) {
     };
   }, [state.phase]);
 
-  // Customer patience / mood timer
+  // Customer patience / mood timer — ticks 4x per second so the on-screen
+  // progress bar drains smoothly instead of stepping by whole seconds.
   useEffect(() => {
     if (state.phase !== "playing") return;
 
+    const TICK_MS = 250;
+    const TICK_SECONDS = TICK_MS / 1000;
+
     moodTimerRef.current = setInterval(() => {
-      const now = Date.now();
       setState((prev) => {
         if (prev.phase !== "playing") return prev;
 
         let missedCount = 0;
+        const leavingIds = new Set<string>();
+
         const updatedOrders = prev.activeOrders
           .map((order) => {
-            const elapsed = (now - order.arrivedAt) / 1000;
-            const ratio = elapsed / order.patience;
+            const nextRemaining = Math.max(0, order.patienceRemaining - TICK_SECONDS);
+            const ratio = 1 - nextRemaining / order.patience;
             let mood: CustomerOrder["mood"] = "happy";
             if (ratio > 0.8) mood = "angry";
             else if (ratio > 0.6) mood = "impatient";
             else if (ratio > 0.4) mood = "neutral";
 
-            // Customer leaves if patience exceeded
-            if (elapsed > order.patience) {
+            // Customer leaves when patience drains to zero — player loses
+            // points for the missed order.
+            if (nextRemaining <= 0) {
               missedCount++;
+              leavingIds.add(order.id);
               return null;
             }
 
-            return { ...order, mood };
+            return { ...order, mood, patienceRemaining: nextRemaining };
           })
           .filter(Boolean) as typeof prev.activeOrders;
-
-        const leavingIds = new Set(
-          prev.activeOrders
-            .filter((o) => {
-              const elapsed = (now - o.arrivedAt) / 1000;
-              return elapsed > o.patience;
-            })
-            .map((o) => o.id)
-        );
 
         const updatedTables = prev.tables.map((t) => {
           if (t.order && leavingIds.has(t.order.id)) {
@@ -454,28 +474,31 @@ export function useGameEngine(options: UseGameEngineOptions) {
           return t;
         });
 
+        // Penalty for letting customers walk out.
+        const penalty = missedCount * pointsPerDelivery;
+
         return {
           ...prev,
           activeOrders: updatedOrders,
           tables: updatedTables,
           missedOrders: prev.missedOrders + missedCount,
+          score: Math.max(0, prev.score - penalty),
         };
       });
-    }, 1000);
+    }, TICK_MS);
 
     return () => {
       if (moodTimerRef.current) clearInterval(moodTimerRef.current);
     };
-  }, [state.phase]);
+  }, [state.phase, pointsPerDelivery]);
 
-  // Customer spawn timer
+  // Customer spawn timer — interval driven by the active level config.
   useEffect(() => {
     if (state.phase !== "playing") return;
 
-    // Spawn first customer immediately, then at intervals
-    const spawnInterval = Math.max(
-      5000,
-      (levelDurationSeconds * 1000) / (maxCustomers * 1.5)
+    const spawnIntervalMs = Math.max(
+      1000,
+      levelConfig.arrivalIntervalSeconds * 1000
     );
 
     spawnCustomer(); // immediate first spawn
@@ -488,16 +511,17 @@ export function useGameEngine(options: UseGameEngineOptions) {
           clearInterval(customerSpawnRef.current);
         }
       }
-    }, spawnInterval);
+    }, spawnIntervalMs);
 
     return () => {
       if (customerSpawnRef.current) clearInterval(customerSpawnRef.current);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.phase]);
+  }, [state.phase, levelConfig]);
 
   return {
     state,
+    levelConfig,
     startGame,
     pauseGame,
     resumeGame,
