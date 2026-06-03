@@ -12,35 +12,87 @@ export type TBrandColor = {
   accent: string;
 };
 
+export type TGameColors = {
+  background: string;
+  surface: string;
+  textPrimary: string;
+  textSecondary: string;
+  success: string;
+  warning: string;
+  error: string;
+};
+
+export type TGameSettings = {
+  levelDurationSeconds: number;
+  maxCustomers: number;
+  numTables: number;
+  pointsPerDelivery: number;
+  enableSoundEffects: boolean;
+};
+
+export type TMenuItem = {
+  id: string;
+  name: string;
+  emoji: string;
+  category: "drink" | "food" | "dessert";
+  prepTimeSeconds: number;
+};
+
 export type TDefaultConfigurableData = {
   appName: string;
   logoUrl: string;
+  tagline?: string;
   brandColor: TBrandColor;
-  // Mirror new schema fields here. Example:
-  //   maxItemsPerPage?: number;
-  //   enableNotifications?: boolean;
-  //   featuredCategories?: string[];
+  gameColors?: TGameColors;
+  gameSettings?: TGameSettings;
+  menuItems?: TMenuItem[];
+  welcomeTitle?: string;
+  welcomeSubtitle?: string;
+  playButtonLabel?: string;
+  heroImageUrl?: string;
 };
 
 export const defaultConfigurablesData: TDefaultConfigurableData = {
-  appName: "FILL_APP_NAME_HERE",
+  appName: "Cafe Dash",
   logoUrl: "FILL_LOGO_URL_HERE",
+  tagline: "Rush. Serve. Repeat.",
   brandColor: {
-    primary: "FILL_PRIMARY_COLOR_HERE",
-    secondary: "FILL_SECONDARY_COLOR_HERE",
-    accent: "FILL_ACCENT_COLOR_HERE",
+    primary: "#FF7043",
+    secondary: "#FFC107",
+    accent: "#26C6DA",
   },
-  // ─────────────────────────────────────────────────────────────────────
-  // Add new field defaults here. See RULES.md §5 for per-type shape.
-  // Required branding fields → use the FILL_X_HERE placeholder pattern.
-  // Optional/typed defaults → real value with a "// fill it here" comment:
-  //
-  //   maxItemsPerPage: 12,                     // fill it here
-  //   enableNotifications: true,               // fill it here
-  //   featuredCategories: [],                  // fill it here
-  //   defaultLanguage: "en",                   // must match enum options
-  //   launchDate: "2025-01-01T00:00:00.000Z",  // ISO-8601
-  //   heroImage: "",                           // resolved URL after upload
-  //   galleryImages: [],                       // array of resolved URLs
-  // ─────────────────────────────────────────────────────────────────────
+  gameColors: {
+    background: "#FFF8F0",
+    surface: "#FFE0CC",
+    textPrimary: "#3E2723",
+    textSecondary: "#6D4C41",
+    success: "#66BB6A",
+    warning: "#FFA726",
+    error: "#EF5350",
+  },
+  gameSettings: {
+    levelDurationSeconds: 90,
+    maxCustomers: 12,
+    numTables: 4,
+    pointsPerDelivery: 100,
+    enableSoundEffects: true,
+  },
+  menuItems: [
+    { id: "coffee", name: "Coffee", emoji: "☕", category: "drink", prepTimeSeconds: 3 },
+    { id: "tea", name: "Tea", emoji: "🍵", category: "drink", prepTimeSeconds: 2 },
+    { id: "juice", name: "Orange Juice", emoji: "🥤", category: "drink", prepTimeSeconds: 2 },
+    { id: "latte", name: "Latte", emoji: "🧋", category: "drink", prepTimeSeconds: 4 },
+    { id: "sandwich", name: "Sandwich", emoji: "🥪", category: "food", prepTimeSeconds: 5 },
+    { id: "burger", name: "Burger", emoji: "🍔", category: "food", prepTimeSeconds: 6 },
+    { id: "salad", name: "Salad", emoji: "🥗", category: "food", prepTimeSeconds: 4 },
+    { id: "pasta", name: "Pasta", emoji: "🍝", category: "food", prepTimeSeconds: 7 },
+    { id: "cake", name: "Cake Slice", emoji: "🍰", category: "dessert", prepTimeSeconds: 2 },
+    { id: "icecream", name: "Ice Cream", emoji: "🍦", category: "dessert", prepTimeSeconds: 2 },
+    { id: "muffin", name: "Muffin", emoji: "🧁", category: "dessert", prepTimeSeconds: 3 },
+    { id: "waffle", name: "Waffle", emoji: "🧇", category: "dessert", prepTimeSeconds: 4 },
+  ],
+  welcomeTitle: "Welcome to Cafe Dash!",
+  welcomeSubtitle: "Take orders, prep food, and deliver before time runs out. Can you handle the rush?",
+  playButtonLabel: "Start Playing",
+  heroImageUrl: "",
 };
