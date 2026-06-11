@@ -1,0 +1,55 @@
+<style>
+  .mode-landscape .sl-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+  .mode-portrait .sl-metrics-grid { display: flex; flex-direction: column; gap: 1rem; }
+</style>
+<section class="w-full h-full overflow-auto bg-white p-10" style="--qb-brand-primary:#3651FF;--qb-brand-secondary:#8FB4FF;--qb-brand-accent:#EAF0FF;--qb-brand-text:#0F172A;--qb-brand-muted:#64748B;">
+  <div class="flex items-center gap-3 mb-2">
+    <span class="text-xs font-bold tracking-widest uppercase" style="color:#3651FF;">Build Status</span>
+  </div>
+  <h2 class="text-4xl font-bold mb-6" style="color:#0F172A;">What's Shipped</h2>
+  <p class="text-lg mb-10 max-w-3xl" style="color:#64748B;">Cafe Dash core systems are live. The MVP loop and the difficulty scaling system are both in builds — focused on the systems players actually feel moment-to-moment.</p>
+
+  <div class="sl-metrics-grid mb-10">
+    <article class="flex-1 min-w-[200px] rounded-2xl p-6 shadow-sm border" style="background-color:#FFFFFF;border-color:#EAF0FF;">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-lg">✅</span>
+        <h4 class="text-xs font-bold uppercase tracking-widest" style="color:#3651FF;">MVP Shipped</h4>
+      </div>
+      <h3 class="text-2xl font-bold leading-tight mb-3" style="color:#0F172A;">Core Loop Live</h3>
+      <p class="text-sm leading-relaxed" style="color:#64748B;">
+        Customer arrival with patience timers → order taking → prep stations (Drinks Bar, Kitchen, Desserts) → delivery → table clear → score.
+      </p>
+    </article>
+
+    <article class="flex-1 min-w-[200px] rounded-2xl p-6 shadow-sm border" style="background-color:#FFFFFF;border-color:#EAF0FF;">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-lg">✅</span>
+        <h4 class="text-xs font-bold uppercase tracking-widest" style="color:#3651FF;">Difficulty Scaling Shipped</h4>
+      </div>
+      <h3 class="text-2xl font-bold leading-tight mb-3" style="color:#0F172A;">10-Level Curve Live</h3>
+      <ul class="text-sm leading-relaxed space-y-1 mb-3" style="color:#64748B;">
+        <li>• Patience <span class="font-semibold" style="color:#0F172A;">45s → 20s</span></li>
+        <li>• Arrivals <span class="font-semibold" style="color:#0F172A;">8s → 3s</span></li>
+        <li>• Customer cap <span class="font-semibold" style="color:#0F172A;">3 → 6</span></li>
+      </ul>
+      <p class="text-sm leading-relaxed mb-2" style="color:#64748B;">Visible patience bar above each customer:</p>
+      <div class="w-full h-2.5 rounded-full overflow-hidden flex" style="background-color:#EAF0FF;">
+        <div class="h-full" style="width:40%;background-color:#16A34A;"></div>
+        <div class="h-full" style="width:35%;background-color:#EAB308;"></div>
+        <div class="h-full" style="width:25%;background-color:#DC2626;"></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="rounded-2xl p-8" style="background-color:#3651FF;">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="flex-1">
+        <h3 class="text-sm font-bold uppercase tracking-widest mb-2" style="color:#8FB4FF;">Status</h3>
+        <p class="text-4xl font-black text-white">Core systems live</p>
+      </div>
+      <div class="flex-[2] text-white/90 text-xl leading-relaxed font-medium border-l-0 md:border-l md:pl-8" style="border-color:rgba(255,255,255,0.25);">
+        MVP loop + difficulty scaling in build — ready for playtest validation.
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,65 @@
+<style>
+  .mode-landscape .sl-ns-layout { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 2rem; min-height: 100%; align-items: stretch; }
+  .mode-portrait .sl-ns-layout { display: flex; flex-direction: column; gap: 1.5rem; min-height: 100%; }
+  .mode-landscape .sl-ns-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .mode-portrait .sl-ns-metrics { display: flex; flex-direction: column; gap: 1rem; }
+</style>
+<section class="w-full h-full overflow-auto bg-white p-10" style="--qb-brand-primary:#3651FF;--qb-brand-secondary:#8FB4FF;--qb-brand-accent:#EAF0FF;--qb-brand-text:#0F172A;--qb-brand-muted:#64748B;">
+  <div class="flex items-center justify-between mb-2">
+    <span class="text-xs font-bold tracking-widest uppercase" style="color:#3651FF;">North Star</span>
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full" style="background-color:#EAF0FF;">
+      <span class="text-xs font-semibold" style="color:#3651FF;">Projected impact — based on your inputs</span>
+    </span>
+  </div>
+  <h2 class="text-4xl font-bold mb-2 leading-tight" style="color:#0F172A;">The one number that matters: Tables Cleared</h2>
+  <p class="text-lg mb-8 max-w-3xl" style="color:#64748B;">Not downloads, not menu screens — the rush of clearing every table. Every future feature must make players want to clear one more table and stay in the flow.</p>
+
+  <div class="sl-ns-layout">
+    <!-- Left: definition + formula -->
+    <div class="flex flex-col gap-5">
+      <div class="rounded-2xl p-6 border" style="background-color:#FFFFFF;border-color:#EAF0FF;">
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#3651FF;">Verified Operation</h3>
+        <p class="text-2xl font-bold leading-tight mb-2" style="color:#0F172A;">A table cleared</p>
+        <p class="text-sm leading-relaxed" style="color:#64748B;">Order taken → prepped at a station → delivered to the correct table → table cleared → score. A real completion in a played session — never a tap, a level open, or a screen view.</p>
+      </div>
+
+      <div class="rounded-2xl p-6" style="background-color:#3651FF;">
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#8FB4FF;">Weekly Verified Operations (WVO)</h3>
+        <p class="text-lg font-semibold leading-relaxed text-white mb-3">
+          5 sessions/wk × 10 levels × ~12 tables cleared/level
+        </p>
+        <p class="text-4xl font-black text-white mb-1">= 600 tables cleared / week</p>
+        <p class="text-sm" style="color:#C7D4FF;">per engaged player</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <span class="px-3 py-1.5 rounded-full text-xs font-medium border" style="background-color:#EAF0FF;color:#3651FF;border-color:#8FB4FF;">Assumption — adjust this: 5 sessions / week</span>
+        <span class="px-3 py-1.5 rounded-full text-xs font-medium border" style="background-color:#EAF0FF;color:#3651FF;border-color:#8FB4FF;">Assumption — adjust this: ~12 tables / level</span>
+      </div>
+    </div>
+
+    <!-- Right: value + flow -->
+    <div class="flex flex-col gap-5">
+      <div class="sl-ns-metrics">
+        <article class="rounded-2xl p-5 border" style="background-color:#FFFFFF;border-color:#EAF0FF;">
+          <h4 class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#3651FF;">Mastery signal</h4>
+          <p class="text-3xl font-black mb-1" style="color:#0F172A;">10 / 10</p>
+          <p class="text-sm leading-relaxed" style="color:#64748B;">Levels cleared as patience drops 45s → 20s — proof the player reached the rush.</p>
+        </article>
+        <article class="rounded-2xl p-5 border" style="background-color:#FFFFFF;border-color:#EAF0FF;">
+          <h4 class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#3651FF;">Flow proxy</h4>
+          <p class="text-3xl font-black mb-1" style="color:#0F172A;">100%</p>
+          <p class="text-sm leading-relaxed" style="color:#64748B;">Clear-every-table streak — sessions ending with zero lost customers.</p>
+        </article>
+      </div>
+
+      <div class="rounded-2xl p-6 flex-1 flex flex-col justify-center" style="background-color:#0F172A;">
+        <h3 class="text-xs font-bold uppercase tracking-widest mb-3" style="color:#8FB4FF;">Why it's worth it</h3>
+        <p class="text-2xl font-bold text-white leading-snug mb-3">Every cleared table is the rush-and-payoff moment that brings players back.</p>
+        <p class="text-sm leading-relaxed mb-4" style="color:#C7D4FF;">600 cleared tables/week per player = 600 hits of satisfaction that drive the next session. Maximize the streak, and retention follows.</p>
+        <p class="text-3xl font-black text-white">≈ 31,200 tables cleared / year</p>
+        <p class="text-sm" style="color:#C7D4FF;">600 × 52 — per engaged player</p>
+      </div>
+    </div>
+  </div>
+</section>
